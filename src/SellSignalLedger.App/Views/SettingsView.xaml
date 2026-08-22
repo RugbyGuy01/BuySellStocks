@@ -1,0 +1,31 @@
+<UserControl x:Class="SellSignalLedger.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Settings" Style="{StaticResource HeadingText}"/>
+
+        <Border Grid.Row="1" Background="{StaticResource PaperRaisedBrush}" CornerRadius="6" Padding="20" MaxWidth="420" HorizontalAlignment="Left">
+            <StackPanel>
+                <TextBlock Text="App-default triggers" Style="{StaticResource EyebrowText}" Margin="0,0,0,10"/>
+
+                <Label Content="MUST SELL % (STOP-LOSS)"/>
+                <TextBox x:Name="MustSellBox"/>
+
+                <Label Content="SELL PROFIT % (TAKE-PROFIT)"/>
+                <TextBox x:Name="SellProfitBox"/>
+
+                <Label Content="SELL DROP PROFIT % (TRAILING STOP)"/>
+                <TextBox x:Name="SellDropProfitBox"/>
+
+                <TextBlock Text="Prices refresh only when you click &quot;Refresh Prices Now&quot; on the toolbar — there is no scheduled or background refresh." TextWrapping="Wrap" Foreground="{StaticResource InkSoftBrush}" FontSize="12" Margin="0,0,0,14"/>
+
+                <Button Content="Save Settings" Foreground="White" HorizontalAlignment="Left" Click="Save_Click" Margin="0,6,0,0"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,61 @@
+<UserControl x:Class="SellSignalLedger.App.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0">
+            <TextBlock DockPanel.Dock="Left" Text="Dashboard" Style="{StaticResource HeadingText}"/>
+            <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <TextBlock x:Name="LastRefreshText" Style="{StaticResource EyebrowText}" HorizontalAlignment="Right"/>
+                <TextBlock x:Name="BuildDateText" Style="{StaticResource EyebrowText}" HorizontalAlignment="Right"/>
+            </StackPanel>
+        </DockPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,16">
+            <Border Background="{StaticResource PaperRaisedBrush}" CornerRadius="6" Padding="16" Width="220" Margin="0,0,12,0">
+                <StackPanel>
+                    <Label Content="CASH BALANCE"/>
+                    <TextBlock x:Name="CashText" FontSize="22" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+            <Border Background="{StaticResource PaperRaisedBrush}" CornerRadius="6" Padding="16" Width="220" Margin="0,0,12,0">
+                <StackPanel>
+                    <Label Content="HOLDINGS VALUE"/>
+                    <TextBlock x:Name="HoldingsText" FontSize="22" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+            <Border Background="{StaticResource PaperRaisedBrush}" CornerRadius="6" Padding="16" Width="220">
+                <StackPanel>
+                    <Label Content="TOTAL PORTFOLIO VALUE"/>
+                    <TextBlock x:Name="TotalText" FontSize="22" FontWeight="SemiBold"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <TextBlock Grid.Row="2" Text="Latest refresh alerts" Style="{StaticResource EyebrowText}" Margin="0,0,0,8"/>
+
+        <ItemsControl Grid.Row="3" x:Name="AlertsList">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="0,0,0,0" CornerRadius="4" Padding="12,10" Margin="0,0,0,8">
+                        <Border.Background>
+                            <SolidColorBrush Color="#E2E6DC"/>
+                        </Border.Background>
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="4" Fill="{Binding Accent}" Margin="0,0,10,0"/>
+                            <TextBlock Text="{Binding Kind}" FontWeight="SemiBold" Foreground="{Binding Accent}" Width="140"/>
+                            <TextBlock Text="{Binding Ticker}" Width="70" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Detail}"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>

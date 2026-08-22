@@ -1,0 +1,44 @@
+<UserControl x:Class="SellSignalLedger.App.Views.OwnedStocksView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Owned Stocks" Style="{StaticResource HeadingText}"/>
+
+        <DataGrid Grid.Row="1" x:Name="Grid" ItemsSource="{Binding}" MouseDoubleClick="Grid_MouseDoubleClick">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{Binding RowBackground}"/>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="TICKER" Binding="{Binding Ticker}" Width="80"/>
+                <DataGridTextColumn Header="QTY" Binding="{Binding Quantity}" Width="60"/>
+                <DataGridTextColumn Header="COST BASIS" Binding="{Binding CostBasis}" Width="100"/>
+                <DataGridTextColumn Header="CURRENT" Binding="{Binding CurrentPrice}" Width="100"/>
+                <DataGridTextColumn Header="STATE" Binding="{Binding State}" Width="90"/>
+                <DataGridTemplateColumn Header="UNREALIZED GAIN/LOSS" Width="170">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding UnrealizedGainLoss}" Foreground="{Binding UnrealizedBrush}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="REALIZED (PARTIAL)" Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding RealizedGainLoss}" Foreground="{Binding RealizedBrush}" VerticalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="MUST SELL" Binding="{Binding MustSell}" Width="100"/>
+                <DataGridTextColumn Header="TRAILING STOP" Binding="{Binding TrailingStop}" Width="110"/>
+                <DataGridTextColumn Header="SELL PROFIT" Binding="{Binding SellProfit}" Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
