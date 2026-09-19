@@ -18,13 +18,15 @@ public partial class SettingsView : UserControl
         MustSellBox.Text = s.DefaultMustSellPct.ToString(CultureInfo.InvariantCulture);
         SellProfitBox.Text = s.DefaultSellProfitPct.ToString(CultureInfo.InvariantCulture);
         SellDropProfitBox.Text = s.DefaultSellDropProfitPct.ToString(CultureInfo.InvariantCulture);
+        BuyDropBox.Text = s.DefaultBuyDropPct.ToString(CultureInfo.InvariantCulture);
     }
 
     private void Save_Click(object sender, RoutedEventArgs e)
     {
         if (!decimal.TryParse(MustSellBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var mustSell) || mustSell <= 0 ||
             !decimal.TryParse(SellProfitBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var sellProfit) || sellProfit <= 0 ||
-            !decimal.TryParse(SellDropProfitBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var sellDrop) || sellDrop <= 0)
+            !decimal.TryParse(SellDropProfitBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var sellDrop) || sellDrop <= 0 ||
+            !decimal.TryParse(BuyDropBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var buyDrop) || buyDrop <= 0)
         {
             MessageBox.Show("Trigger percentages must be positive numbers.", "Invalid input", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -34,6 +36,7 @@ public partial class SettingsView : UserControl
         settings.DefaultMustSellPct = mustSell;
         settings.DefaultSellProfitPct = sellProfit;
         settings.DefaultSellDropProfitPct = sellDrop;
+        settings.DefaultBuyDropPct = buyDrop;
         App.Db.SaveChanges();
 
         MessageBox.Show("Settings saved.", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);

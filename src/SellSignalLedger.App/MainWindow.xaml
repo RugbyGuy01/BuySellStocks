@@ -9,6 +9,7 @@
                 <TextBlock DockPanel.Dock="Left" Text="Sell-Signal Ledger" Foreground="White" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,24,0"/>
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                     <Button Content="Import Holdings" Foreground="White" Click="ImportButton_Click"/>
+                    <Button Content="Export Holdings" Foreground="White" Click="ExportButton_Click"/>
                     <Button Content="Buy" Foreground="White" Click="BuyButton_Click"/>
                     <Button Content="Sell" Foreground="White" Click="SellButton_Click"/>
                     <Button x:Name="RefreshButton" Content="Refresh Prices Now" Foreground="White" Click="RefreshButton_Click"/>

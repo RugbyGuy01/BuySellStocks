@@ -36,6 +36,10 @@ public partial class DashboardView : UserControl
         HoldingsText.Text = holdingsValue.ToString("C");
         TotalText.Text = (cash + holdingsValue).ToString("C");
 
+        var realizedGainLoss = App.Db.Sales.ToList().Sum(s => s.RealizedGainLoss);
+        RealizedGainLossText.Text = realizedGainLoss.ToString("C");
+        RealizedGainLossText.Foreground = realizedGainLoss >= 0 ? Brushes2.Gain : Brushes2.Loss;
+
         var lastRefresh = App.Portfolio.GetSettings().LastPriceRefresh;
         LastRefreshText.Text = lastRefresh.HasValue
             ? $"Prices last updated {lastRefresh.Value:yyyy-MM-dd HH:mm}"
@@ -66,6 +70,14 @@ public partial class DashboardView : UserControl
             },
             _ => null
         }).Where(r => r != null).ToList();
+
+        rows.AddRange(App.LastBuySignals.Select(signal => new AlertRow
+        {
+            Kind = "BUY",
+            Ticker = signal.Ticker,
+            Detail = $"Down {signal.DropPct:F1}% from the last sell price of {signal.SellPrice:C} — current price {signal.CurrentPrice:C}.",
+            Accent = Brushes2.Gain
+        }));
 
         AlertsList.ItemsSource = rows;
     }

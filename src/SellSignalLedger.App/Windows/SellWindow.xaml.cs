@@ -44,7 +44,7 @@ public partial class SellWindow : Window
         if (PositionCombo.SelectedItem is PositionOption opt)
         {
             HoldingInfo.Text = $"{opt.Quantity} shares held. Selling fewer than all shares leaves the remainder open under the same triggers.";
-            PriceBox.Text = opt.CurrentPrice.ToString(CultureInfo.InvariantCulture);
+            PriceBox.Text = opt.CurrentPrice.ToString("F2", CultureInfo.InvariantCulture);
         }
     }
 

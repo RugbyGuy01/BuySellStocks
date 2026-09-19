@@ -6,5 +6,6 @@ public class AppSettings
     public decimal DefaultMustSellPct { get; set; } = 8m;
     public decimal DefaultSellProfitPct { get; set; } = 15m;
     public decimal DefaultSellDropProfitPct { get; set; } = 5m;
+    public decimal DefaultBuyDropPct { get; set; } = 10m;
     public DateTime? LastPriceRefresh { get; set; }
 }

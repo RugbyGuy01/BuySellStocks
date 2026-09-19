@@ -7,7 +7,7 @@ namespace SellSignalLedger.App.Windows;
 
 public partial class BuyWindow : Window
 {
-    public BuyWindow()
+    public BuyWindow(string? presetTicker = null)
     {
         InitializeComponent();
         PurchaseDatePicker.SelectedDate = DateTime.Today;
@@ -16,6 +16,11 @@ public partial class BuyWindow : Window
         SellProfitBox.Text = "";
         SellDropProfitBox.Text = "";
         CostPreview.Text = $"Cash available: {App.Portfolio.GetCashBalance():C}   ·   defaults: {s.DefaultMustSellPct}% / {s.DefaultSellProfitPct}% / {s.DefaultSellDropProfitPct}%";
+
+        if (!string.IsNullOrWhiteSpace(presetTicker))
+        {
+            TickerBox.Text = presetTicker;
+        }
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e)

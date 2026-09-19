@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ public partial class App : Application
     public static PortfolioService Portfolio { get; private set; } = null!;
     public static IPriceService PriceService { get; private set; } = null!;
     public static List<DailyCycleEvent> LastCycleEvents { get; set; } = new();
+    public static List<BuySignal> LastBuySignals { get; set; } = new();
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -34,6 +36,7 @@ public partial class App : Application
         Db = new AppDbContext(dbPath);
         Db.Database.EnsureCreated();
         EnsureTriggerAnchorColumn();
+        EnsureBuyDropColumn();
 
         Portfolio = new PortfolioService(Db);
         Portfolio.RecalculateOpenPositionTriggersFromLatestPartialSale();
@@ -57,6 +60,23 @@ public partial class App : Application
 
         reader.Close();
         command.CommandText = "ALTER TABLE Positions ADD COLUMN TriggerAnchorPrice TEXT NOT NULL DEFAULT 0";
+        command.ExecuteNonQuery();
+    }
+
+    private static void EnsureBuyDropColumn()
+    {
+        var connection = Db.Database.GetDbConnection();
+        if (connection.State != ConnectionState.Open) connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = "PRAGMA table_info(AppSettings)";
+        using var reader = command.ExecuteReader();
+        while (reader.Read())
+        {
+            if (string.Equals(reader.GetString(1), "DefaultBuyDropPct", StringComparison.Ordinal)) return;
+        }
+
+        reader.Close();
+        command.CommandText = "ALTER TABLE AppSettings ADD COLUMN DefaultBuyDropPct TEXT NOT NULL DEFAULT 10";
         command.ExecuteNonQuery();
     }
 

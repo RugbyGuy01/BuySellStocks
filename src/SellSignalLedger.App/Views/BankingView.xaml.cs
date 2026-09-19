@@ -24,6 +24,12 @@ public partial class BankingView : UserControl
             .Select(LedgerRow.From)
             .ToList();
         Grid.ItemsSource = rows;
+
+        foreach (var column in Grid.Columns) column.SortDirection = null;
+        var whenColumn = Grid.Columns[0];
+        whenColumn.SortDirection = System.ComponentModel.ListSortDirection.Descending;
+        Grid.Items.SortDescriptions.Clear();
+        Grid.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("TimestampSort", System.ComponentModel.ListSortDirection.Descending));
     }
 
     private void Deposit_Click(object sender, RoutedEventArgs e) => DoTransfer(isDeposit: true);

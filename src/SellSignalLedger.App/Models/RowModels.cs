@@ -11,6 +11,7 @@ public static class Brushes2
     public static readonly Brush Ink = new SolidColorBrush(Color.FromRgb(0x1C, 0x23, 0x1F));
     public static readonly Brush TrailingHighlight = new SolidColorBrush(Color.FromRgb(0xFC, 0xEF, 0xA8));
     public static readonly Brush MustSellHighlight = new SolidColorBrush(Color.FromRgb(0xF5, 0xB8, 0xAD));
+    public static readonly Brush BuySignalHighlight = new SolidColorBrush(Color.FromRgb(0xC8, 0xE6, 0xC9));
     public static readonly Brush NoHighlight = Brushes.Transparent;
 }
 
@@ -79,8 +80,10 @@ public class SoldStockRow
     public string RealizedGainLoss { get; init; } = "";
     public Brush RealizedBrush { get; init; } = Brushes2.Ink;
     public string HoldingPeriod { get; init; } = "";
+    public Brush RowBackground { get; init; } = Brushes2.NoHighlight;
+    public bool IsBuySignal { get; init; }
 
-    public static SoldStockRow From(Sale s)
+    public static SoldStockRow From(Sale s, bool isBuySignal = false)
     {
         var days = (s.SellDate - s.BuyDate).Days;
         return new SoldStockRow
@@ -101,17 +104,22 @@ public class SoldStockRow
             RealizedGainLoss = $"{s.RealizedGainLoss:C} ({s.RealizedGainLossPct:F1}%)",
             RealizedBrush = s.RealizedGainLoss >= 0 ? Brushes2.Gain : Brushes2.Loss,
             // Standard US tax convention: more than one year held is long-term.
-            HoldingPeriod = $"{days}d — {(days > 365 ? "Long Term" : "Short Term")}"
+            HoldingPeriod = $"{days}d — {(days > 365 ? "Long Term" : "Short Term")}",
+            RowBackground = isBuySignal ? Brushes2.BuySignalHighlight : Brushes2.NoHighlight,
+            IsBuySignal = isBuySignal
         };
     }
 }
 
 public class LedgerRow
 {
+    public DateTime TimestampSort { get; init; }
     public string Timestamp { get; init; } = "";
     public string Type { get; init; } = "";
+    public decimal AmountSort { get; init; }
     public string Amount { get; init; } = "";
     public Brush AmountBrush { get; init; } = Brushes2.Ink;
+    public decimal BalanceAfterSort { get; init; }
     public string BalanceAfter { get; init; } = "";
     public string Note { get; init; } = "";
 
@@ -119,10 +127,13 @@ public class LedgerRow
     {
         return new LedgerRow
         {
+            TimestampSort = e.Timestamp,
             Timestamp = e.Timestamp.ToString("yyyy-MM-dd HH:mm"),
             Type = e.Type == CashEntryType.Sell ? "Sold" : e.Type.ToString(),
+            AmountSort = e.Amount,
             Amount = e.Amount.ToString("C"),
             AmountBrush = e.Amount >= 0 ? Brushes2.Gain : Brushes2.Loss,
+            BalanceAfterSort = e.BalanceAfter,
             BalanceAfter = e.BalanceAfter.ToString("C"),
             Note = e.Note ?? ""
         };

@@ -31,18 +31,18 @@
             </StackPanel>
         </Border>
 
-        <DataGrid Grid.Row="2" x:Name="Grid" ItemsSource="{Binding}">
+        <DataGrid Grid.Row="2" x:Name="Grid" ItemsSource="{Binding}" CanUserSortColumns="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="WHEN" Binding="{Binding Timestamp}" Width="150"/>
+                <DataGridTextColumn Header="WHEN" Binding="{Binding Timestamp}" SortMemberPath="TimestampSort" Width="150"/>
                 <DataGridTextColumn Header="TYPE" Binding="{Binding Type}" Width="100"/>
-                <DataGridTemplateColumn Header="AMOUNT" Width="110">
+                <DataGridTemplateColumn Header="AMOUNT" SortMemberPath="AmountSort" Width="110">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Amount}" Foreground="{Binding AmountBrush}" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="BALANCE AFTER" Binding="{Binding BalanceAfter}" Width="130"/>
+                <DataGridTextColumn Header="BALANCE AFTER" Binding="{Binding BalanceAfter}" SortMemberPath="BalanceAfterSort" Width="130"/>
                 <DataGridTextColumn Header="NOTE" Binding="{Binding Note}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>

@@ -9,7 +9,12 @@
 
         <TextBlock Grid.Row="0" Text="Stock Sold" Style="{StaticResource HeadingText}"/>
 
-        <DataGrid Grid.Row="1" x:Name="Grid" ItemsSource="{Binding}">
+        <DataGrid Grid.Row="1" x:Name="Grid" ItemsSource="{Binding}" MouseDoubleClick="Grid_MouseDoubleClick">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{Binding RowBackground}"/>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="TICKER" Binding="{Binding Ticker}" Width="80"/>
                 <DataGridTextColumn Header="QTY" Binding="{Binding QuantitySold}" Width="55"/>

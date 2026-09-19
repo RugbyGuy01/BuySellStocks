@@ -22,6 +22,9 @@
                 <Label Content="SELL DROP PROFIT % (TRAILING STOP)"/>
                 <TextBox x:Name="SellDropProfitBox"/>
 
+                <Label Content="BUY BACK DROP % (FROM LAST SELL PRICE)"/>
+                <TextBox x:Name="BuyDropBox"/>
+
                 <TextBlock Text="Prices refresh only when you click &quot;Refresh Prices Now&quot; on the toolbar — there is no scheduled or background refresh." TextWrapping="Wrap" Foreground="{StaticResource InkSoftBrush}" FontSize="12" Margin="0,0,0,14"/>
 
                 <Button Content="Save Settings" Foreground="White" HorizontalAlignment="Left" Click="Save_Click" Margin="0,6,0,0"/>

@@ -10,10 +10,13 @@ public class InsufficientFundsException : Exception
 }
 
 public record DailyCycleEvent(TriggerOutcome Outcome, Position Position, decimal Price);
+public record BuySignal(string Ticker, decimal SellPrice, decimal CurrentPrice, decimal DropPct);
 
 public class PortfolioService
 {
     private readonly AppDbContext _db;
+
+    public List<BuySignal> LastBuySignals { get; private set; } = new();
 
     public PortfolioService(AppDbContext db)
     {
@@ -132,8 +135,14 @@ public class PortfolioService
         var closes = quantitySold == position.Quantity;
         var sale = BuildSale(position, quantitySold, price, sellDate, ExitReason.Manual, closes);
 
-        // The sale price is the most recent real quote for this ticker — reflect it
-        // immediately in Owned Stocks rather than waiting for the next price refresh.
+        // The sale price is the most recent real quote for this ticker, so update
+        // every open holding with the same symbol immediately.
+        foreach (var matchingPosition in _db.Positions
+                     .Where(p => p.Ticker == position.Ticker && p.Id != position.Id))
+        {
+            TriggerEngine.Apply(matchingPosition, price);
+        }
+
         position.CurrentPrice = price;
 
         ApplySaleToPosition(position, sale);
@@ -220,17 +229,24 @@ public class PortfolioService
     public async Task<List<DailyCycleEvent>> RunDailyPriceCycle(IPriceService priceService, DateTime asOf)
     {
         var events = new List<DailyCycleEvent>();
+        LastBuySignals = new();
         var positions = _db.Positions.ToList();
+        var latestSales = _db.Sales
+            .GroupBy(s => s.Ticker)
+            .Select(g => g.OrderByDescending(s => s.SellDate).First())
+            .ToList();
 
         GetSettings().LastPriceRefresh = asOf;
 
-        if (positions.Count == 0)
+        if (positions.Count == 0 && latestSales.Count == 0)
         {
             _db.SaveChanges();
             return events;
         }
 
-        var tickers = positions.Select(p => p.Ticker).Distinct();
+        var tickers = positions.Select(p => p.Ticker)
+            .Concat(latestSales.Select(s => s.Ticker))
+            .Distinct();
         var closes = await priceService.GetLatestClosesAsync(tickers);
 
         foreach (var position in positions)
@@ -239,6 +255,20 @@ public class PortfolioService
 
             var result = TriggerEngine.Apply(position, price);
             events.Add(new DailyCycleEvent(result.Outcome, position, price));
+        }
+
+        var buyDropPct = GetSettings().DefaultBuyDropPct;
+        foreach (var sale in latestSales)
+        {
+            if (!closes.TryGetValue(sale.Ticker, out var price)) continue;
+
+            var dropPct = sale.SellPrice == 0
+                ? 0
+                : (sale.SellPrice - price) / sale.SellPrice * 100m;
+            if (dropPct >= buyDropPct)
+            {
+                LastBuySignals.Add(new BuySignal(sale.Ticker, sale.SellPrice, price, dropPct));
+            }
         }
 
         _db.SaveChanges();
